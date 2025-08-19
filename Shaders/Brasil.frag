@@ -1,32 +1,70 @@
 #version 330 core
-out vec4 fragColor;
+
+out vec4 FragColor;
+
 uniform float iTime;
+
 uniform vec2 iResolution;
+ 
+void main() {
 
-void main()
-{
-    // Coordenadas UV normalizadas (0 a 1)
-    vec2 uv = gl_FragCoord.xy/iResolution.xy;
+    vec3 green = vec3(0.0, 0.55, 0.0);
 
-    // Corrigir proporção da tela para não deformar
-    float aspect = iResolution.x / iResolution.y;
-    vec2 centered = (uv - 0.5) * vec2(aspect, 1.0); // Agora temos (x, y) centralizado e corrigido
+    vec3 yellow = vec3(1.0, 1.0, 0.0);
 
-    // Cor padrão: verde
-    vec3 color = vec3(0.0, 0.6, 0.2);
+    vec3 blue = vec3(0.0, 0.0, 0.5);
 
-    // Desenhar o losango amarelo
-    if (abs(centered.x) + abs(centered.y) < 0.7)
-        color = vec3(1.0, 0.8, 0.0); // amarelo
+    vec3 white = vec3(1.0, 1.0, 1.0);
 
-    // Desenhar o círculo azul
-    if (length(centered) < 0.3)
-        color = vec3(0.0, 0.3, 0.7); // azul
+    vec3 color = green;
+ 
+    vec2 uv = gl_FragCoord.xy / iResolution.xy;
 
-    // Desenhar faixa branca curva
-    float wave = 0.05 * sin(centered.x * 30.0); // curva senoidal
-    if (length(centered) < 0.3 && abs(centered.y + wave) < 0.015)
-        color = vec3(1.0); // branco
+    vec2 center = vec2(0.5, 0.5);
+ 
+    vec2 adjusted_uv_losango = uv;
 
-    fragColor = vec4(color, 1.0);
+    adjusted_uv_losango.x *= iResolution.x / iResolution.y;
+ 
+    float dist_losango = abs(adjusted_uv_losango.x - center.x * (iResolution.x / iResolution.y)) / 0.5 + abs(adjusted_uv_losango.y - center.y) / 0.35;
+
+    if (dist_losango < 1.0) {
+
+        color = yellow;
+
+    }
+ 
+    vec2 adjusted_uv_circle = uv;
+
+    adjusted_uv_circle.x *= iResolution.x / iResolution.y;
+
+    float dist_circulo = distance(adjusted_uv_circle, vec2(0.5 * (iResolution.x / iResolution.y), 0.5));
+
+    if (dist_circulo < 0.22) {
+
+        color = blue;
+
+    }
+ 
+    vec2 faixa_uv = adjusted_uv_circle - vec2(0.5 * (iResolution.x / iResolution.y), 0.4);
+
+    float raio_externo_faixa = 0.25;
+
+    float raio_interno_faixa = 0.21;
+
+    float offset_y_faixa = 0.03;
+ 
+    float dist_externo_faixa = distance(faixa_uv, vec2(0.0, -offset_y_faixa));
+
+    float dist_interno_faixa = distance(faixa_uv, vec2(0.0, -offset_y_faixa));
+
+    if (dist_circulo < 0.22 && dist_externo_faixa < raio_externo_faixa && dist_interno_faixa > raio_interno_faixa) {
+
+        color = white;
+
+    }
+ 
+    FragColor = vec4(color, 1.0);
+
 }
+ 
