@@ -1,13 +1,14 @@
 #version 330 core
 out vec4 fragColor;
+in vec2 TexCoord;
 uniform float iTime;
 uniform vec2 iResolution;
 
 
 void main()
 {
-    vec2 uv = gl_FragCoord.xy / iResolution.xy;
-
+    //vec2 uv = gl_FragCoord.xy / iResolution.xy;
+    vec2 uv = TexCoord;
     uv -= 0.5; 
     uv.x *= iResolution.x / iResolution.y; 
 
