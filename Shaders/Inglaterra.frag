@@ -6,6 +6,7 @@ uniform vec2 iResolution;
 
 vec3 lightDir = normalize(vec3(0.75, -1.0, 0.0));
 float ambient = 0.2;
+vec3 Normal = vec3(0.0, 0.0, 1.0);
 
 void main()
 {
@@ -14,7 +15,7 @@ void main()
     uv -= 0.5;
     uv.x *= iResolution.x / iResolution.y;
 
-    float thickness = 0.08;
+    float thickness = 0.04;
 
     
     vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
@@ -31,7 +32,6 @@ void main()
     }
 
     
-    vec3 Normal = vec3(0.0, 0.0, 1.0);
     float brightness = clamp(dot(Normal, -lightDir), 0.0, 1.0);
 
     
